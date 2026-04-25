@@ -16,7 +16,7 @@ class Cell {
   // ex. MAXIMUM_CANDIDATE_PITCH_CHANGE_FACTOR = 0.1 means the Cell under a Cell with pitch p could inherit a pitch *around* the range [p*(1-0.1),p*(1+0.1)] (but symmetric in log space)
   private static final float MAXIMUM_CANDIDATE_PITCH_CHANGE_FACTOR = 0.1;
   
-  private final float[] SIMPLE_RATIOS = { 1.0, 2.0, 3.0/2.0, 4.0/3.0, 5.0/4.0, 6.0/5.0, 5.0/3.0, 8.0/5.0 }; // to add 6ths: include 5.0/3.0 and 8.0/5.0
+  private final float[] SIMPLE_RATIOS = { 1.0, 2.0, 3.0/2.0, 4.0/3.0, 5.0/4.0, 6.0/5.0, 5.0/3.0, 8.0/5.0 };
   
   // public
   

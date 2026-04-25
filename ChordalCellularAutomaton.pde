@@ -16,7 +16,6 @@ final float FURTHEST_AUDIBLE_CELL = 3.0; // number of cells away from mouse that
 // SOFTEN_HIGH_PITCHES is a measure in [0,1] of how much quieter a high pitch should be than a low pitch
 // scaling down higher frequencies helps adjust for the ear's natural tendency to hear higher pitches as louder
 final float SOFTEN_HIGH_PITCHES = 0.75;
-//final float AMPLITUDE_UPDATE_SECONDS = 0.01; Pitch and amplitude interpolation and gliding control?? extra DEBUGGING TODO ?
 
 // how many cells above a given Cell influence its chosen pitch
 final int PARENTS_PER_CELL = 7;
