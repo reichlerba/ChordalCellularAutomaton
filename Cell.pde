@@ -20,12 +20,21 @@ class Cell {
   
   // public
   
-  // initialize and draw this Cell
+  // initialize and draw this Cell with a new pitch
   Cell(float xCenter, float yCenter, Cell[] parents, int row) {
     this.xCenter = xCenter;
     this.yCenter = yCenter;
     this.row = row;
     pitch = calculateNewPitch(parents);
+    drawCell();
+  }
+  
+  // initialize and draw this Cell with a given pitch
+  Cell(float xCenter, float yCenter, float pitch, int row) {
+    this.xCenter = xCenter;
+    this.yCenter = yCenter;
+    this.row = row;
+    this.pitch = pitch;
     drawCell();
   }
   
