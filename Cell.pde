@@ -5,7 +5,7 @@ import processing.sound.*;
 class Cell {
   private float xCenter, yCenter, pitch;
   
-  private static final float MINIMUM_HZ = 440 * 2 / 5.0; // == F3
+  private static final float MINIMUM_HZ = 440 * 2 / 5.0; // 176 == Just Intonation F3
   private static final float MAXIMUM_HZ = 440 * 2; // 880 == A5
   
   private static final int CELL_BORDER_COLOR = 0xFFF95E10; // value found using print(hex(color(249, 94, 16)));
@@ -81,14 +81,9 @@ class Cell {
     rect(x, y, CELL_SIDE_LENGTH, CELL_SIDE_LENGTH, cornerRadius);
     
     // write text
-    String t = str(round(getPitch()));
-    float maxTextWidth = 0.7 * CELL_SIDE_LENGTH;
-    fill(CELL_BORDER_COLOR);
-    float baseTextSize = 30;
-    textSize(baseTextSize);
-    float tWidth = textWidth(t);
-    textSize(baseTextSize * (maxTextWidth / tWidth));
-    text(t, xCenter, yCenter);
+    fill(color(220, 54, 40));
+    textSize(HERTZ_TEXT_SIZE);
+    text(round(getPitch()), xCenter, yCenter);
   }
   
   // find the pitch a cell needs based on is parents' pitches
@@ -139,8 +134,8 @@ class Cell {
   // reduces the chance that sampling random candidate frequencies simply creates no pleasing pitch
   private float snapTowardsNearParent(float testPitch, Cell[] parents) {
     for(int i = 1; i < parents.length; i++) {
-      float differenceInClosePitches = 4;
-      if(abs(testPitch - parents[i].getPitch()) < differenceInClosePitches) {
+      float pitchProximity = 8;
+      if(abs(testPitch - parents[i].getPitch()) < pitchProximity) {
         return (testPitch + parents[i].getPitch()) / 2.0;
       }
     }

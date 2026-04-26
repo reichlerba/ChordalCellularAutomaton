@@ -15,11 +15,11 @@ final String DOWNLOADS_DIRECTORY = "saved-downloads";
 
 // defines Cells size
 // changes to CELL_SIDE_LENGTH will successfully change how an uploaded file is displayed
-final int CELL_SIDE_LENGTH = 40; // measured in Pixels
+final int CELL_SIDE_LENGTH = 50; // measured in Pixels
 
 // used to define Canvas size
 int CELLS_PER_GENERATION = 25;
-int NUM_GENERATIONS = 25;
+int NUM_GENERATIONS = 20;
 
 // volume controls
 // these changes will successfully change how an uploaded file is heard
@@ -36,6 +36,9 @@ final int PARENTS_PER_CELL = 7;
 
 Cell[][] cells;
 SinOsc[] sineWaves;
+
+// text size for Cell hertz 
+float HERTZ_TEXT_SIZE;
 
 
 // sets the Canvas size
@@ -61,8 +64,7 @@ void settings() {
 // initializes every Cell in cells and draws the Canvas
 void setup() {
   background(255);
-  textFont(createFont("Helvetica", CELL_SIDE_LENGTH / 5.0));
-  textAlign(CENTER, CENTER);
+  initializeTextSettings();
   if(LOAD_FROM_SAVE) {
     loadPresetCells(FILENAME_LOADFROM);
     initializeSineWaves();
@@ -89,6 +91,18 @@ void keyReleased() {
 
 
 // sketch-level helper functions
+
+// sets text settings for the sketch
+void initializeTextSettings() {
+  textFont(createFont("SansSerif.bold", CELL_SIDE_LENGTH / 5.0));
+  textAlign(CENTER, CENTER);
+  String t = "333"; // example possible pitch value
+  float maxTextWidth = 0.6 * CELL_SIDE_LENGTH;
+  float baseTextSize = 30;
+  textSize(baseTextSize);
+  float tWidth = textWidth(t);
+  HERTZ_TEXT_SIZE = baseTextSize * (maxTextWidth / tWidth);
+}
 
 // sets the global cells equal to a fresh full set of Cell objects
 void initializeCells() {
