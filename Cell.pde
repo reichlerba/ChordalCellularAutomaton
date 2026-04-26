@@ -4,10 +4,9 @@ import processing.sound.*;
 
 class Cell {
   private float xCenter, yCenter, pitch;
-  private int row;
   
   private static final float MINIMUM_HZ = 440 * 2 / 5.0; // == F3
-  private static final float MAXIMUM_HZ = 440 * 3 / 2; // 660 == Just Intonation E5
+  private static final float MAXIMUM_HZ = 440 * 2; // 880 == A5
   
   private static final int CELL_BORDER_COLOR = 0xFFF95E10; // value found using print(hex(color(249, 94, 16)));
   private static final int CELL_FILL_COLOR = 0xFFFA8E02; // value found using print(hex(color(250,142,2)));
@@ -21,19 +20,17 @@ class Cell {
   // public
   
   // initialize and draw this Cell with a new pitch
-  Cell(float xCenter, float yCenter, Cell[] parents, int row) {
+  Cell(float xCenter, float yCenter, Cell[] parents) {
     this.xCenter = xCenter;
     this.yCenter = yCenter;
-    this.row = row;
     pitch = calculateNewPitch(parents);
     drawCell();
   }
   
   // initialize and draw this Cell with a given pitch
-  Cell(float xCenter, float yCenter, float pitch, int row) {
+  Cell(float xCenter, float yCenter, float pitch) {
     this.xCenter = xCenter;
     this.yCenter = yCenter;
-    this.row = row;
     this.pitch = pitch;
     drawCell();
   }
@@ -82,6 +79,16 @@ class Cell {
     stroke(CELL_BORDER_COLOR);
     fill(CELL_FILL_COLOR);
     rect(x, y, CELL_SIDE_LENGTH, CELL_SIDE_LENGTH, cornerRadius);
+    
+    // write text
+    String t = str(round(getPitch()));
+    float maxTextWidth = 0.7 * CELL_SIDE_LENGTH;
+    fill(CELL_BORDER_COLOR);
+    float baseTextSize = 30;
+    textSize(baseTextSize);
+    float tWidth = textWidth(t);
+    textSize(baseTextSize * (maxTextWidth / tWidth));
+    text(t, xCenter, yCenter);
   }
   
   // find the pitch a cell needs based on is parents' pitches
@@ -94,7 +101,7 @@ class Cell {
     float bestPitch = basePitch;
     float bestScore = -1;
     
-    for(int numCandidatesToGenerate = 20; numCandidatesToGenerate > 0; numCandidatesToGenerate--) {
+    for(int numCandidatesToGenerate = 30; numCandidatesToGenerate > 0; numCandidatesToGenerate--) {
       // choose pitch option
       float r = log(1.0 + MAXIMUM_CANDIDATE_PITCH_CHANGE_FACTOR);
       float candidatePitch = basePitch * exp(random(-r, r)); // choose candidate pitch symetrically around basePitch in log space
@@ -118,7 +125,26 @@ class Cell {
       }
     }
     
+    boolean snapToNearParent = true;
+    if(snapToNearParent){
+      bestPitch = snapTowardsNearParent(bestPitch, parents);
+    }
+    
     return bestPitch;
+  }
+  
+  // checks if a pitch is very close to one of its parents (besides parents[0])
+  // if it is very close, returns the average of that frequency and testPitch
+  // can optionally be used to reduce pulsing sounds that appear in frequencies very close
+  // reduces the chance that sampling random candidate frequencies simply creates no pleasing pitch
+  private float snapTowardsNearParent(float testPitch, Cell[] parents) {
+    for(int i = 1; i < parents.length; i++) {
+      float differenceInClosePitches = 4;
+      if(abs(testPitch - parents[i].getPitch()) < differenceInClosePitches) {
+        return (testPitch + parents[i].getPitch()) / 2.0;
+      }
+    }
+    return testPitch;
   }
   
   // returns pitch jumped either up or down by a simple ratio

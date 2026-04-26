@@ -1,12 +1,16 @@
 // Written by Benjamin Reichler
 
 // Main file contains high level control logic 
-// Last edited April 25, 2026
+// Last edited April 26, 2026
 
 
 // load saved file?
 boolean LOAD_FROM_SAVE = false;
 final String FILENAME_LOADFROM = "";
+// directory name to download Cell configs to, or upload from
+final String DOWNLOADS_DIRECTORY = "saved-downloads";
+// NOTE: loaded files are looked for in the directory where this file is kept, at the location:
+// DOWNLOADS_DIRECTORY + "/" + FILENAME_LOADFROM + ".json"
 
 
 // defines Cells size
@@ -14,23 +18,21 @@ final String FILENAME_LOADFROM = "";
 final int CELL_SIDE_LENGTH = 40; // measured in Pixels
 
 // used to define Canvas size
-int CELLS_PER_GENERATION = 30;
-int NUM_GENERATIONS = 20;
+int CELLS_PER_GENERATION = 25;
+int NUM_GENERATIONS = 25;
 
 // volume controls
 // these changes will successfully change how an uploaded file is heard
 final float MAXIMUM_CELL_VOLUME = 0.50; // should be in [0,1]
-final float FURTHEST_AUDIBLE_CELL = 3.0; // number of cells away from mouse that can be heard
+final float FURTHEST_AUDIBLE_CELL = 4.0; // number of cells away from mouse that can be heard
 // SOFTEN_HIGH_PITCHES is a measure in [0,1] of how much quieter a high pitch should be than a low pitch
 // scaling down higher frequencies helps adjust for the ear's natural tendency to hear higher pitches as louder
-final float SOFTEN_HIGH_PITCHES = 0.75;
+final float SOFTEN_HIGH_PITCHES = 0.65;
 
 // how many cells above a given Cell influence its chosen pitch
 // used to generate new pitches
 final int PARENTS_PER_CELL = 7;
 
-// directory name to download Cell configs to, or upload from
-final String DOWNLOADS_DIRECTORY = "saved-downloads";
 
 Cell[][] cells;
 SinOsc[] sineWaves;
@@ -59,6 +61,8 @@ void settings() {
 // initializes every Cell in cells and draws the Canvas
 void setup() {
   background(255);
+  textFont(createFont("Helvetica", CELL_SIDE_LENGTH / 5.0));
+  textAlign(CENTER, CENTER);
   if(LOAD_FROM_SAVE) {
     loadPresetCells(FILENAME_LOADFROM);
     initializeSineWaves();
@@ -97,7 +101,7 @@ void initializeCells() {
     for(int col = 0; col < CELLS_PER_GENERATION; col++) {
       float x = (col + 0.5) * CELL_SIDE_LENGTH;
       
-      cells[row][col] = new Cell(x, y, getCellParents(row, col), row);
+      cells[row][col] = new Cell(x, y, getCellParents(row, col));
     }
   }
 }
@@ -113,7 +117,7 @@ void initializePresetCells(float[][] pitches) {
     for(int col = 0; col < CELLS_PER_GENERATION; col++) {
       float x = (col + 0.5) * CELL_SIDE_LENGTH;
       
-      cells[row][col] = new Cell(x, y, pitches[row][col], row);
+      cells[row][col] = new Cell(x, y, pitches[row][col]);
     }
   }
 }
